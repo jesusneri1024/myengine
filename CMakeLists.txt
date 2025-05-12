@@ -23,3 +23,6 @@ elseif (WIN32)
 else()
     target_link_libraries(MyEngine GL)
 endif()
+
+
+include_directories(external/glm)

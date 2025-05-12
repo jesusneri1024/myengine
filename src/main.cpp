@@ -4,6 +4,10 @@
 #include <fstream>
 #include <sstream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 std::string loadFile(const char *path)
 {
     std::ifstream file(path);
@@ -77,9 +81,10 @@ int main()
         return -1;
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // izquierda
-        0.5f, -0.5f, 0.0f,  // derecha
-        0.0f, 0.5f, 0.0f    // arriba
+        //     posición        //     color
+        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // rojo
+        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // verde
+        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // azul
     };
 
     GLuint VBO, VAO;
@@ -91,13 +96,19 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    // Posición: layout (location = 0)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
+
+    // Color: layout (location = 1)
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    GLuint shader = createShaderProgram("src/shader.vert", "src/shader.frag");
+    // Carga shaders con transformación y color
+    GLuint shader = createShaderProgram("src/shader_colored.vert", "src/shader_colored.frag");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -105,6 +116,16 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shader);
+
+        // Transformación (rotación en el tiempo)
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::rotate(transform, (float)glfwGetTime() * 5.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+        transform = glm::scale(transform, glm::vec3(0.5f));
+
+        // Enviar al shader
+        GLint loc = glGetUniformLocation(shader, "transform");
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(transform));
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
