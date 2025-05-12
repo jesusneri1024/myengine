@@ -32,9 +32,9 @@ cd myengine
 ├── /external
 │   ├── /glfw         # Código fuente de GLFW
 │   └── /glad         # Archivos generados desde glad.dav1d.de
+│   └── /glm
 ├── /src
 │   ├── main.cpp
-│   ├── glad.c
 │   ├── shader.vert
 │   └── shader.frag
 ├── CMakeLists.txt
