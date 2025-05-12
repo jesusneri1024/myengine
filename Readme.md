@@ -44,11 +44,10 @@ cd myengine
 ### 3. Construcción (macOS/Linux)
 
 ```bash
-mkdir build
 cd build
-cmake ..
-make
-./MyEngine
+cmake --build .
+cd ..
+build/MyEngine
 ```
 
 ### 4. Construcción (Windows + MSVC)
