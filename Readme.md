@@ -83,13 +83,3 @@ Abre el `.sln` generado y compílalo desde Visual Studio.
 - GLM (puedes instalarlo vía paquete o copiar `/glm` al proyecto)
 
 ---
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia MIT.
-
----
-
-## ✍️ Autor
-
-**Tu Nombre** – [@tu_usuario](https://github.com/tu_usuario)
