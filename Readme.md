@@ -4,7 +4,7 @@ Un proyecto base para motor gráfico en C++ usando OpenGL, GLFW, GLAD y GLM. Act
 
 ## 📸 Captura
 
-![Captura de pantalla](windowfoto.png)
+![Captura de pantalla](windowphoto.png)
 
 ## 🚀 Características
 
