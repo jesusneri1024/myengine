@@ -10,6 +10,8 @@ Un proyecto base para motor gráfico en C++ usando OpenGL, GLFW, GLAD y GLM. Act
 
 ![Movimiento con Input](movementEngine.gif)
 
+![Objetos 3D en Engine](poligonsEngine.gif)
+
 ## 🚀 Características
 
 - 🔷 Ventana y entrada con [GLFW](https://www.glfw.org/)
