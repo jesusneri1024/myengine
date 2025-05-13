@@ -1,13 +1,11 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <memory>
+#include <GLFW/glfw3.h>
 
 #include "Graphics/Shader.h"
 #include "Graphics/Camera.h"
-#include "Model/Model.h"
-#include "Scene/Scene.h"
+#include "Scene/IScene.h"
 
 class Application
 {
@@ -19,16 +17,16 @@ public:
     void Run();
 
 private:
+    void ProcessInput();
+
     GLFWwindow *window;
-    int windowWidth, windowHeight;
+    int windowWidth;
+    int windowHeight;
 
     std::unique_ptr<Shader> shader;
-    std::shared_ptr<Model> model; // Compartido entre objetos
-    Scene scene;
     Camera camera;
+    std::unique_ptr<IScene> activeScene;
 
     float deltaTime;
     float lastFrame;
-
-    void ProcessInput();
 };

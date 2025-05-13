@@ -1,5 +1,5 @@
-#include "Core/Application.h"
 #include <glad/glad.h>
+#include "Core/Application.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "Core/InputManager.h"
-#include "Scene/GameObject.h"
+#include "Scene/SceneNivel1.h"
 
 Application::Application()
     : window(nullptr),
@@ -56,16 +56,10 @@ bool Application::Init(int width, int height, const char *title)
     glEnable(GL_DEPTH_TEST);
 
     shader = std::make_unique<Shader>("src/shader_colored.vert", "src/shader_colored.frag");
-    model = std::make_shared<Model>("assets/WusonOBJ.obj");
 
-    // Agregar objetos a la escena
-    auto go1 = std::make_shared<GameObject>(model);
-    go1->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    scene.AddObject(go1);
-
-    auto go2 = std::make_shared<GameObject>(model);
-    go2->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
-    scene.AddObject(go2);
+    // Crear e inicializar la escena
+    activeScene = std::make_unique<SceneNivel1>();
+    activeScene->Load();
 
     return true;
 }
@@ -93,7 +87,9 @@ void Application::Run()
         shader->SetMat4("view", view);
         shader->SetMat4("projection", projection);
 
-        scene.Draw(*shader);
+        // Lógica de escena
+        activeScene->Update(deltaTime);
+        activeScene->Draw(*shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
