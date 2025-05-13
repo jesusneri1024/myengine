@@ -11,3 +11,4 @@ build/
 # Ignorar archivos temporales
 *.DS_Store
 
+external/assimp/

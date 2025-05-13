@@ -3,10 +3,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 // =================== Cámara ===================
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -21,7 +26,9 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-// =================== Entrada ===================
+GLuint VAO, VBO;
+int vertexCount = 0; // ✅ Nuevo: cantidad real de vértices
+
 void processInput(GLFWwindow *window)
 {
     float cameraSpeed = 2.5f * deltaTime;
@@ -34,7 +41,6 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
-    // Salir al presionar ESC
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
@@ -69,7 +75,6 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     cameraFront = glm::normalize(front);
 }
 
-// =================== Utilidades ===================
 std::string loadFile(const char *path)
 {
     std::ifstream file(path);
@@ -124,7 +129,41 @@ GLuint createShaderProgram(const char *vertexPath, const char *fragmentPath)
     return program;
 }
 
-// =================== Main ===================
+void loadModel(const std::string &path)
+{
+    Assimp::Importer importer;
+    const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
+
+    if (!scene || !scene->HasMeshes())
+    {
+        std::cerr << "Error cargando modelo: " << importer.GetErrorString() << std::endl;
+        return;
+    }
+
+    std::vector<float> vertexData;
+    aiMesh *mesh = scene->mMeshes[0];
+
+    vertexCount = mesh->mNumVertices; // ✅ cantidad real de vértices
+
+    for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
+    {
+        aiVector3D pos = mesh->mVertices[i];
+        vertexData.push_back(pos.x);
+        vertexData.push_back(pos.y);
+        vertexData.push_back(pos.z);
+    }
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+}
+
 int main()
 {
     glfwInit();
@@ -135,44 +174,22 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow *window = glfwCreateWindow(800, 600, "My Engine", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(800, 600, "Model Viewer", nullptr, nullptr);
     if (!window)
         return -1;
     glfwMakeContextCurrent(window);
-
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         return -1;
 
-    float vertices[] = {
-        // Posición          // Color
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // rojo
-        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // verde
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // azul
-    };
-
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Posición
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    // Color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Modo wireframe
 
     GLuint shader = createShaderProgram("src/shader_colored.vert", "src/shader_colored.frag");
+    loadModel("assets/WusonOBJ.obj");
+
+    glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -183,24 +200,20 @@ int main()
         processInput(window);
 
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shader);
 
-        // Matrices
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, currentFrame * 5.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(0.5f));
-
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
 
         glUniformMatrix4fv(glGetUniformLocation(shader, "transform"), 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount); //  Usamos la cantidad real
 
         glfwSwapBuffers(window);
         glfwPollEvents();

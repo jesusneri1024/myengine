@@ -3,27 +3,35 @@ project(MyEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# === Subdirectorios ===
 add_subdirectory(external/glfw)
+add_subdirectory(external/assimp)
 
+# === Include directories ===
 include_directories(
     external/glfw/include
     external/glad/include
+    external/glm
+    external/assimp/include
 )
 
+# === Ejecutable ===
 add_executable(MyEngine
     src/main.cpp
     external/glad/src/glad.c
 )
 
-target_link_libraries(MyEngine glfw)
+# === Librerías ===
+target_link_libraries(MyEngine PRIVATE
+    glfw
+    assimp
+)
+
+# === OpenGL según plataforma ===
 if (APPLE)
-    target_link_libraries(MyEngine "-framework OpenGL")
+    target_link_libraries(MyEngine PRIVATE "-framework OpenGL")
 elseif (WIN32)
-    target_link_libraries(MyEngine opengl32)
+    target_link_libraries(MyEngine PRIVATE opengl32)
 else()
-    target_link_libraries(MyEngine GL)
+    target_link_libraries(MyEngine PRIVATE GL)
 endif()
-
-
-include_directories(external/glm)
-
