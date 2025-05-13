@@ -2,6 +2,8 @@
 
 Un proyecto base para motor gráfico en C++ usando OpenGL, GLFW, GLAD y GLM. Actualmente renderiza un triángulo simple con color y transformación por matriz.
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jesusneri1024/myengine)
+
 ## 📸 Captura
 
 ![Captura de pantalla](windowphoto.png)
