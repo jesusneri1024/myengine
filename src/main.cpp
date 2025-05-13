@@ -1,28 +1,18 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "Graphics/Shader.h"
 #include "Graphics/Camera.h"
+#include "Model/Model.h"
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
-GLuint VAO, VBO;
-int vertexCount = 0;
 
 void processInput(GLFWwindow *window)
 {
@@ -34,95 +24,6 @@ void processInput(GLFWwindow *window)
 void mouse_callback(GLFWwindow *window, double xpos, double ypos)
 {
     camera.ProcessMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
-}
-
-std::string loadFile(const char *path)
-{
-    std::ifstream file(path);
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    return buffer.str();
-}
-
-GLuint compileShader(GLenum type, const char *source)
-{
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &source, nullptr);
-    glCompileShader(shader);
-
-    int success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        char info[512];
-        glGetShaderInfoLog(shader, 512, nullptr, info);
-        std::cerr << "Shader compile error:\n"
-                  << info << std::endl;
-    }
-    return shader;
-}
-
-GLuint createShaderProgram(const char *vertexPath, const char *fragmentPath)
-{
-    std::string vertCode = loadFile(vertexPath);
-    std::string fragCode = loadFile(fragmentPath);
-
-    GLuint vert = compileShader(GL_VERTEX_SHADER, vertCode.c_str());
-    GLuint frag = compileShader(GL_FRAGMENT_SHADER, fragCode.c_str());
-
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vert);
-    glAttachShader(program, frag);
-    glLinkProgram(program);
-
-    int success;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        char info[512];
-        glGetProgramInfoLog(program, 512, nullptr, info);
-        std::cerr << "Shader link error:\n"
-                  << info << std::endl;
-    }
-
-    glDeleteShader(vert);
-    glDeleteShader(frag);
-    return program;
-}
-
-void loadModel(const std::string &path)
-{
-    Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
-
-    if (!scene || !scene->HasMeshes())
-    {
-        std::cerr << "Error cargando modelo: " << importer.GetErrorString() << std::endl;
-        return;
-    }
-
-    std::vector<float> vertexData;
-    aiMesh *mesh = scene->mMeshes[0];
-
-    vertexCount = mesh->mNumVertices;
-
-    for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
-    {
-        aiVector3D pos = mesh->mVertices[i];
-        vertexData.push_back(pos.x);
-        vertexData.push_back(pos.y);
-        vertexData.push_back(pos.z);
-    }
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
 }
 
 int main()
@@ -148,7 +49,7 @@ int main()
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     Shader shader("src/shader_colored.vert", "src/shader_colored.frag");
-    loadModel("assets/WusonOBJ.obj");
+    Model model("assets/WusonOBJ.obj");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -165,23 +66,20 @@ int main()
 
         shader.Use();
 
-        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 modelMatrix = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
 
-        shader.SetMat4("transform", model);
+        shader.SetMat4("transform", modelMatrix);
         shader.SetMat4("view", view);
         shader.SetMat4("projection", projection);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        model.Draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
