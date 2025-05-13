@@ -1,7 +1,6 @@
 #pragma once
 
-#include <glad/glad.h> // ✅ primero
-
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <memory>
 
@@ -30,5 +29,4 @@ private:
     float lastFrame;
 
     void ProcessInput();
-    static void MouseCallback(GLFWwindow *window, double xpos, double ypos);
 };

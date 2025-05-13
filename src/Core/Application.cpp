@@ -8,15 +8,12 @@
 
 #include "Core/InputManager.h"
 
-static Camera *s_Camera = nullptr;
-
 Application::Application()
     : window(nullptr), camera(glm::vec3(0.0f, 0.0f, 3.0f),
                               glm::vec3(0.0f, 1.0f, 0.0f),
                               -90.0f, 0.0f),
       deltaTime(0.0f), lastFrame(0.0f)
 {
-    s_Camera = &camera;
 }
 
 Application::~Application()
@@ -46,7 +43,12 @@ bool Application::Init(int width, int height, const char *title)
 
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, MouseCallback);
+
+    // ✅ Registrar InputManager como el callback de mouse
+    glfwSetCursorPosCallback(window, InputManager::MouseCallback);
+
+    // ✅ Asignar cámara a InputManager
+    InputManager::SetCamera(&camera);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         return false;
@@ -94,9 +96,4 @@ void Application::Run()
 void Application::ProcessInput()
 {
     InputManager::ProcessInput(window, camera, deltaTime);
-}
-
-void Application::MouseCallback(GLFWwindow *window, double xpos, double ypos)
-{
-    s_Camera->ProcessMouseMovement(static_cast<float>(xpos), static_cast<float>(ypos));
 }

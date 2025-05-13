@@ -1,10 +1,10 @@
+// ==== Camera.cpp ====
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
-    : position(position), worldUp(up), yaw(yaw), pitch(pitch),
-      lastX(400), lastY(300), firstMouse(true)
+    : position(position), worldUp(up), yaw(yaw), pitch(pitch)
 {
     updateCameraVectors();
 }
@@ -14,33 +14,32 @@ glm::mat4 Camera::GetViewMatrix() const
     return glm::lookAt(position, position + front, up);
 }
 
-void Camera::ProcessKeyboard(GLFWwindow *window, float deltaTime)
+void Camera::MoveForward(float deltaTime)
 {
     float speed = 2.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        position += speed * front;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        position -= speed * front;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        position -= glm::normalize(glm::cross(front, up)) * speed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        position += glm::normalize(glm::cross(front, up)) * speed;
+    position += front * speed;
 }
 
-void Camera::ProcessMouseMovement(float xpos, float ypos)
+void Camera::MoveBackward(float deltaTime)
 {
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
+    float speed = 2.5f * deltaTime;
+    position -= front * speed;
+}
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
+void Camera::MoveLeft(float deltaTime)
+{
+    float speed = 2.5f * deltaTime;
+    position -= glm::normalize(glm::cross(front, up)) * speed;
+}
 
+void Camera::MoveRight(float deltaTime)
+{
+    float speed = 2.5f * deltaTime;
+    position += glm::normalize(glm::cross(front, up)) * speed;
+}
+
+void Camera::Rotate(float xoffset, float yoffset)
+{
     float sensitivity = 0.1f;
     xoffset *= sensitivity;
     yoffset *= sensitivity;
