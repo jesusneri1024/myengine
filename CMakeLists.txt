@@ -16,6 +16,7 @@ include_directories(
     src/Graphics     
     src/Model
     src/Core
+
 )
 
 # === Ejecutable ===
@@ -26,6 +27,7 @@ add_executable(MyEngine
     src/Model/Model.cpp
     src/Model/Mesh.cpp  
     src/Core/Application.cpp  
+    src/Core/InputManager.cpp  
     external/glad/src/glad.c
 )
 

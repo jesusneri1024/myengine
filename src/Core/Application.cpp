@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "Core/InputManager.h"
+
 static Camera *s_Camera = nullptr;
 
 Application::Application()
@@ -91,15 +93,7 @@ void Application::Run()
 
 void Application::ProcessInput()
 {
-    camera.ProcessKeyboard(window, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    // Wireframe toggle
-    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    InputManager::ProcessInput(window, camera, deltaTime);
 }
 
 void Application::MouseCallback(GLFWwindow *window, double xpos, double ypos)
