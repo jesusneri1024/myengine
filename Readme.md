@@ -24,7 +24,7 @@ Un proyecto base para motor gráfico en C++ usando OpenGL, GLFW, GLAD y GLM. Act
 ### 1. Clona el proyecto
 
 ```bash
-git clone https://github.com/tu_usuario/myengine.git
+git clone https://github.com/jesusneri1024/myengine.git
 cd myengine
 ```
 
