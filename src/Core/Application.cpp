@@ -1,13 +1,13 @@
+// src/Core/Application.cpp
+
 #include <glad/glad.h>
 #include "Core/Application.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
-
 #include "Core/InputManager.h"
 #include "Scene/SceneNivel1.h"
+#include "Scene/SceneNivel2.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 Application::Application()
     : window(nullptr),
@@ -15,7 +15,9 @@ Application::Application()
              glm::vec3(0.0f, 1.0f, 0.0f),
              -90.0f, 0.0f),
       deltaTime(0.0f),
-      lastFrame(0.0f)
+      lastFrame(0.0f),
+      tabPressed(false),
+      currentSceneIndex(0)
 {
 }
 
@@ -57,9 +59,14 @@ bool Application::Init(int width, int height, const char *title)
 
     shader = std::make_unique<Shader>("src/shader_colored.vert", "src/shader_colored.frag");
 
-    // Crear e inicializar la escena
-    activeScene = std::make_unique<SceneNivel1>();
-    activeScene->Load();
+    // Registrar escenas
+    auto nivel1 = std::make_shared<SceneNivel1>();
+    auto nivel2 = std::make_shared<SceneNivel2>();
+    nivel1->Load();
+    nivel2->Load();
+
+    scenes.push_back(nivel1);
+    scenes.push_back(nivel2);
 
     return true;
 }
@@ -87,9 +94,8 @@ void Application::Run()
         shader->SetMat4("view", view);
         shader->SetMat4("projection", projection);
 
-        // Lógica de escena
-        activeScene->Update(deltaTime);
-        activeScene->Draw(*shader);
+        scenes[currentSceneIndex]->Update(deltaTime);
+        scenes[currentSceneIndex]->Draw(*shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -99,4 +105,21 @@ void Application::Run()
 void Application::ProcessInput()
 {
     InputManager::ProcessInput(window, camera, deltaTime);
+
+    // Detectar Tab para cambiar de escena
+    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && !tabPressed)
+    {
+        tabPressed = true;
+        SwitchScene();
+    }
+    else if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
+    {
+        tabPressed = false;
+    }
+}
+
+void Application::SwitchScene()
+{
+    currentSceneIndex = (currentSceneIndex + 1) % scenes.size();
+    std::cout << "Changing Scene #" << currentSceneIndex << std::endl;
 }

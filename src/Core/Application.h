@@ -1,8 +1,8 @@
+// src/Core/Application.h
 #pragma once
 
 #include <memory>
 #include <GLFW/glfw3.h>
-
 #include "Graphics/Shader.h"
 #include "Graphics/Camera.h"
 #include "Scene/IScene.h"
@@ -18,6 +18,7 @@ public:
 
 private:
     void ProcessInput();
+    void SwitchScene();
 
     GLFWwindow *window;
     int windowWidth;
@@ -25,8 +26,12 @@ private:
 
     std::unique_ptr<Shader> shader;
     Camera camera;
-    std::unique_ptr<IScene> activeScene;
 
     float deltaTime;
     float lastFrame;
+
+    bool tabPressed;
+
+    std::vector<std::shared_ptr<IScene>> scenes;
+    int currentSceneIndex;
 };

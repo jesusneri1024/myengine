@@ -32,6 +32,7 @@ add_executable(MyEngine
     src/Scene/GameObject.cpp
     src/Scene/Scene.cpp
     src/Scene/SceneNivel1.cpp
+    src/Scene/SceneNivel2.cpp
     external/glad/src/glad.c
 )
 
