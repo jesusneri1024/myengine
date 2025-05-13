@@ -4,9 +4,11 @@ Un proyecto base para motor gráfico en C++ usando OpenGL, GLFW, GLAD y GLM. Act
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jesusneri1024/myengine)
 
-## 📸 Captura
+## 📸
 
 ![Captura de pantalla](windowphoto.png)
+
+![Movimiento con Input](movementEngine.gif)
 
 ## 🚀 Características
 
@@ -81,6 +83,6 @@ Abre el `.sln` generado y compílalo desde Visual Studio.
 - C++17
 - OpenGL 4.1 compatible
 - GLAD y GLFW (ya incluidos en `/external`)
-- GLM (puedes instalarlo vía paquete o copiar `/glm` al proyecto)
+- GLM (ya incluidos en `/external`)
 
 ---
