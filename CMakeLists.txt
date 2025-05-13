@@ -13,11 +13,13 @@ include_directories(
     external/glad/include
     external/glm
     external/assimp/include
+    src/Graphics     
 )
 
 # === Ejecutable ===
 add_executable(MyEngine
     src/main.cpp
+    src/Graphics/Shader.cpp     
     external/glad/src/glad.c
 )
 

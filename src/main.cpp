@@ -13,6 +13,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Graphics/Shader.h"
+
 // =================== Cámara ===================
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -186,7 +188,7 @@ int main()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Modo wireframe
 
-    GLuint shader = createShaderProgram("src/shader_colored.vert", "src/shader_colored.frag");
+    Shader shader("src/shader_colored.vert", "src/shader_colored.frag");
     loadModel("assets/WusonOBJ.obj");
 
     glEnable(GL_DEPTH_TEST);
@@ -202,15 +204,15 @@ int main()
         glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(shader);
+        shader.Use();
 
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
 
-        glUniformMatrix4fv(glGetUniformLocation(shader, "transform"), 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        shader.SetMat4("transform", model);
+        shader.SetMat4("view", view);
+        shader.SetMat4("projection", projection);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount); //  Usamos la cantidad real
@@ -221,7 +223,6 @@ int main()
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteProgram(shader);
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
