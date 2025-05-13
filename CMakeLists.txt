@@ -15,6 +15,7 @@ include_directories(
     external/assimp/include
     src/Graphics     
     src/Model
+    src/Scene
     src/Core
 
 )
@@ -28,6 +29,8 @@ add_executable(MyEngine
     src/Model/Mesh.cpp  
     src/Core/Application.cpp  
     src/Core/InputManager.cpp  
+    src/Scene/GameObject.cpp
+    src/Scene/Scene.cpp
     external/glad/src/glad.c
 )
 

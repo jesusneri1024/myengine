@@ -7,12 +7,15 @@
 #include <iostream>
 
 #include "Core/InputManager.h"
+#include "Scene/GameObject.h"
 
 Application::Application()
-    : window(nullptr), camera(glm::vec3(0.0f, 0.0f, 3.0f),
-                              glm::vec3(0.0f, 1.0f, 0.0f),
-                              -90.0f, 0.0f),
-      deltaTime(0.0f), lastFrame(0.0f)
+    : window(nullptr),
+      camera(glm::vec3(0.0f, 0.0f, 3.0f),
+             glm::vec3(0.0f, 1.0f, 0.0f),
+             -90.0f, 0.0f),
+      deltaTime(0.0f),
+      lastFrame(0.0f)
 {
 }
 
@@ -44,10 +47,7 @@ bool Application::Init(int width, int height, const char *title)
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    // ✅ Registrar InputManager como el callback de mouse
     glfwSetCursorPosCallback(window, InputManager::MouseCallback);
-
-    // ✅ Asignar cámara a InputManager
     InputManager::SetCamera(&camera);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -56,7 +56,16 @@ bool Application::Init(int width, int height, const char *title)
     glEnable(GL_DEPTH_TEST);
 
     shader = std::make_unique<Shader>("src/shader_colored.vert", "src/shader_colored.frag");
-    model = std::make_unique<Model>("assets/WusonOBJ.obj");
+    model = std::make_shared<Model>("assets/WusonOBJ.obj");
+
+    // Agregar objetos a la escena
+    auto go1 = std::make_shared<GameObject>(model);
+    go1->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    scene.AddObject(go1);
+
+    auto go2 = std::make_shared<GameObject>(model);
+    go2->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+    scene.AddObject(go2);
 
     return true;
 }
@@ -76,17 +85,15 @@ void Application::Run()
 
         shader->Use();
 
-        glm::mat4 modelMatrix = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f),
                                                 (float)windowWidth / windowHeight,
                                                 0.1f, 100.0f);
 
-        shader->SetMat4("transform", modelMatrix);
         shader->SetMat4("view", view);
         shader->SetMat4("projection", projection);
 
-        model->Draw();
+        scene.Draw(*shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
