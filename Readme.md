@@ -1,56 +1,65 @@
 # 🧹 MyEngine
 
-Un proyecto base para motor gráfico en C++ usando OpenGL, GLFW, GLAD y GLM. Actualmente renderiza un triángulo simple con color y transformación por matriz.
+A clean and modular C++ graphics engine template using **OpenGL**, **GLFW**, **GLAD**, and **GLM**.  
+Currently renders a colored 3D model with transformation via matrix operations.
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jesusneri1024/myengine)
 
-## 📸
+## 📸 Screenshots
 
-![Captura de pantalla](windowphoto.png)
+![Window Screenshot](windowphoto.png)  
+![Input Movement](movementEngine.gif)  
+![3D Model Rendering](poligonsEngine.gif)
 
-![Movimiento con Input](movementEngine.gif)
+## 🚀 Features
 
-![Objetos 3D en Engine](poligonsEngine.gif)
+- 🔷 Window and input with [GLFW](https://www.glfw.org/)
+- ✨ Rendering using **OpenGL 4.1 Core Profile**
+- ⚡ OpenGL function loading via [GLAD](https://glad.dav1d.de/)
+- 🎨 Custom shaders (vertex + fragment)
+- 🧮 Matrix operations via [GLM](https://github.com/g-truc/glm)
+- 🧱 Organized modular codebase with **CMake**
+- 📦 3D model loading support via [ASSIMP](https://github.com/assimp/assimp)
 
-## 🚀 Características
+## 💠 Project Structure
 
-- 🔷 Ventana y entrada con [GLFW](https://www.glfw.org/)
-- ✨ Renderizado con OpenGL 4.1 (Core Profile)
-- ⚡ Carga de funciones OpenGL con [GLAD](https://glad.dav1d.de/)
-- 🎨 Shaders personalizados (vertex + fragment)
-- 🧮 Transformaciones con matrices usando [GLM](https://github.com/g-truc/glm)
-- 🧱 Organización modular con CMake
+```
+MY_ENGINE
+│
+├── assets                # Models, textures, etc.
+├── build                 # CMake build output
+├── external              # Third-party libraries (except assimp)
+│   ├── glad
+│   ├── glfw
+│   └── glm
+│   └── assimp
+├── src
+│   ├── Core              # Application, InputManager
+│   ├── Graphics          # Camera, Shader
+│   ├── Model             # Mesh, Model
+│   ├── main.cpp
+├── build_and_run.sh      # Build + run script (Linux/macOS)
+├── .gitignore
+└── CMakeLists.txt
+```
 
-## 💠 Instalación
+## 📥 External Libraries
 
-### 1. Clona el proyecto
+- ✅ GLFW, GLAD, and GLM are included in `/external`.
+- ❌ **ASSIMP is not included due to its size**.  
+  Download it manually:
 
 ```bash
-git clone https://github.com/jesusneri1024/myengine.git
-cd myengine
+git clone --branch master https://github.com/assimp/assimp.git external/assimp
 ```
 
-### 2. Estructura del proyecto
+Then rebuild the project.
 
-```
-/myengine
-│
-├── /external
-│   ├── /glfw         # Código fuente de GLFW
-│   └── /glad         # Archivos generados desde glad.dav1d.de
-│   └── /glm
-│   └── /assimp
-├── /src
-│   ├── main.cpp
-│   ├── shader.vert
-│   └── shader.frag
-├── CMakeLists.txt
-└── README.md
-```
+---
 
-### 3. Construcción (macOS/Linux)
+## 🛠 Build Instructions
 
-Primero CMake: Configure y despues:
+### macOS / Linux
 
 ```bash
 cd build
@@ -59,15 +68,13 @@ cd ..
 build/MyEngine
 ```
 
-o bien puedes utilizar el script build_and_run.sh
+Or use the helper script:
 
 ```bash
 ./build_and_run.sh
 ```
 
-### 4. Construcción (Windows + MSVC)
-
-Puedes usar CMake con Visual Studio:
+### Windows (Visual Studio)
 
 ```bash
 mkdir build
@@ -75,26 +82,27 @@ cd build
 cmake ..
 ```
 
-Abre el `.sln` generado y compílalo desde Visual Studio.
+Then open the generated `.sln` file in **Visual Studio** and build the solution.
 
 ---
 
-## 🧠 ¿Cómo funciona?
+## 🧠 How it works
 
-- `main.cpp` abre una ventana, compila shaders y dibuja un triángulo.
-- `shader.vert` aplica transformación con matriz y pasa color al fragment shader.
-- `shader.frag` pinta el triángulo interpolando los colores.
-- Se usan VAO/VBO para definir y cargar los vértices.
+- `Application` handles window, initialization, and main loop.
+- `InputManager` processes keyboard/mouse input (FPS style camera).
+- `Camera` provides view matrix.
+- `Shader` compiles and manages GLSL programs.
+- `Model` and `Mesh` use **ASSIMP** to load and draw `.obj` models.
+- Uses **VAO/VBO/EBO** for rendering.
 
 ---
 
-## 📚 Requisitos
+## 📚 Requirements
 
 - CMake >= 3.10
 - C++17
-- OpenGL 4.1 compatible
-- GLAD y GLFW (ya incluidos en `/external`)
-- GLM (ya incluidos en `/external`)
-- [ASSIMP](https://www.glfw.org/)
+- OpenGL 4.1 compatible GPU
+- GLFW, GLAD, GLM (already included)
+- [ASSIMP](https://github.com/assimp/assimp) (must be cloned manually)
 
 ---
