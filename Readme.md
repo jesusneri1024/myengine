@@ -54,6 +54,12 @@ cd ..
 build/MyEngine
 ```
 
+o bien puedes utilizar el script build_and_run.sh
+
+```bash
+./build_and_run.sh
+```
+
 ### 4. Construcción (Windows + MSVC)
 
 Puedes usar CMake con Visual Studio:
