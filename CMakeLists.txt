@@ -15,6 +15,7 @@ include_directories(
     external/assimp/include
     src/Graphics     
     src/Model
+    src/Core
 )
 
 # === Ejecutable ===
@@ -24,6 +25,7 @@ add_executable(MyEngine
     src/Graphics/Camera.cpp  
     src/Model/Model.cpp
     src/Model/Mesh.cpp  
+    src/Core/Application.cpp  
     external/glad/src/glad.c
 )
 
@@ -41,3 +43,5 @@ elseif (WIN32)
 else()
     target_link_libraries(MyEngine PRIVATE GL)
 endif()
+
+include_directories(src)
