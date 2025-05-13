@@ -39,6 +39,7 @@ cd myengine
 │   ├── /glfw         # Código fuente de GLFW
 │   └── /glad         # Archivos generados desde glad.dav1d.de
 │   └── /glm
+│   └── /assimp
 ├── /src
 │   ├── main.cpp
 │   ├── shader.vert
@@ -48,6 +49,8 @@ cd myengine
 ```
 
 ### 3. Construcción (macOS/Linux)
+
+Primero CMake: Configure y despues:
 
 ```bash
 cd build
@@ -92,5 +95,6 @@ Abre el `.sln` generado y compílalo desde Visual Studio.
 - OpenGL 4.1 compatible
 - GLAD y GLFW (ya incluidos en `/external`)
 - GLM (ya incluidos en `/external`)
+- [ASSIMP](https://www.glfw.org/)
 
 ---
