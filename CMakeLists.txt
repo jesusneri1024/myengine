@@ -19,7 +19,8 @@ include_directories(
 # === Ejecutable ===
 add_executable(MyEngine
     src/main.cpp
-    src/Graphics/Shader.cpp     
+    src/Graphics/Shader.cpp  
+    src/Graphics/Camera.cpp    
     external/glad/src/glad.c
 )
 
