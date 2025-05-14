@@ -12,18 +12,36 @@ void InputManager::ProcessInput(GLFWwindow *window, Camera &camera, float deltaT
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.MoveRight(deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // ESC activa el cursor
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        if (!s_CursorEnabled)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            s_CursorEnabled = true;
+        }
+    }
+
+    // ENTER lo vuelve a ocultar (modo cámara)
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+    {
+        if (s_CursorEnabled)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            s_CursorEnabled = false;
+            ResetMouse(); // Evita saltos bruscos en la cámara
+        }
+    }
 }
 
 void InputManager::MouseCallback(GLFWwindow *window, double xpos, double ypos)
 {
-    if (!s_Camera)
+    if (!s_Camera || s_CursorEnabled)
         return;
 
     if (s_FirstMouse)
@@ -45,4 +63,14 @@ void InputManager::MouseCallback(GLFWwindow *window, double xpos, double ypos)
 void InputManager::SetCamera(Camera *cam)
 {
     s_Camera = cam;
+}
+
+void InputManager::ResetMouse()
+{
+    s_FirstMouse = true;
+}
+
+bool InputManager::IsCursorEnabled()
+{
+    return s_CursorEnabled;
 }

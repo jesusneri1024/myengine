@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 # === Subdirectorios ===
 add_subdirectory(external/glfw)
 add_subdirectory(external/assimp)
+add_subdirectory(external/imgui)  # <--- ImGui agregado
 
 # === Include directories ===
 include_directories(
@@ -13,11 +14,14 @@ include_directories(
     external/glad/include
     external/glm
     external/assimp/include
+    external/imgui                # <--- ImGui
+    external/imgui/backends       # <--- ImGui backends
     src/Graphics     
     src/Model
     src/Scene
     src/Core
-
+    src/UI
+    src
 )
 
 # === Ejecutable ===
@@ -33,6 +37,7 @@ add_executable(MyEngine
     src/Scene/Scene.cpp
     src/Scene/SceneNivel1.cpp
     src/Scene/SceneNivel2.cpp
+    src/UI/UIManager.cpp
     external/glad/src/glad.c
 )
 
@@ -40,6 +45,7 @@ add_executable(MyEngine
 target_link_libraries(MyEngine PRIVATE
     glfw
     assimp
+    imgui  # <--- ImGui agregado
 )
 
 # === OpenGL según plataforma ===
@@ -50,5 +56,3 @@ elseif (WIN32)
 else()
     target_link_libraries(MyEngine PRIVATE GL)
 endif()
-
-include_directories(src)

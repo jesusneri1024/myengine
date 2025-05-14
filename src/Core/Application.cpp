@@ -7,6 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+#include "UI/UIManager.h"
+
 Application::Application()
     : window(nullptr),
       camera(glm::vec3(0.0f, 0.0f, 3.0f),
@@ -21,6 +23,9 @@ Application::Application()
 
 Application::~Application()
 {
+
+    UIManager::Shutdown();
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -66,6 +71,8 @@ bool Application::Init(int width, int height, const char *title)
     scenes.push_back(nivel1);
     scenes.push_back(nivel2);
 
+    UIManager::Init(window);
+
     return true;
 }
 
@@ -92,10 +99,16 @@ void Application::Run()
         shader->SetMat4("view", view);
         shader->SetMat4("projection", projection);
 
-        // La lógica de luz ahora está en cada escena
+        // Actualizar escena
         scenes[currentSceneIndex]->Update(deltaTime);
         scenes[currentSceneIndex]->Draw(*shader);
 
+        // Aquí debes iniciar y renderizar ImGui
+        UIManager::BeginFrame();
+        UIManager::RenderMainUI(); // Aquí puedes dibujar, por ejemplo, un window ImGui::Begin("Hello")...
+        UIManager::EndFrame();
+
+        // Swap debe ir al final
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
