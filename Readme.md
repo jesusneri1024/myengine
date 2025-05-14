@@ -7,10 +7,10 @@ Currently renders a colored 3D model with transformation via matrix operations.
 
 ## 📸 Screenshots
 
-![Window Screenshot](windowphoto.png)  
-![Input Movement](movementEngine.gif)  
-![3D Model Rendering](poligonsEngine.gif)
-![Light Movement](LighMovementEngine.gif)
+![Window Screenshot](photos_project/windowphoto.png)  
+![Input Movement](photos_project/movementEngine.gif)  
+![3D Model Rendering](photos_project/poligonsEngine.gif)
+![Light Movement](photos_project/LighMovementEngine.gif)
 
 ## 🚀 Features
 
