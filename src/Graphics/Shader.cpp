@@ -80,3 +80,9 @@ GLuint Shader::CreateProgram(const char *vertexSrc, const char *fragSrc) const
 
     return program;
 }
+
+void Shader::SetVec3(const std::string &name, const glm::vec3 &value) const
+{
+    GLint location = glGetUniformLocation(ID, name.c_str());
+    glUniform3fv(location, 1, glm::value_ptr(value));
+}

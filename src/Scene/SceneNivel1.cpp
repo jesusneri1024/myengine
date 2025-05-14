@@ -1,4 +1,3 @@
-// src/Scene/SceneNivel1.cpp
 #include "Scene/SceneNivel1.h"
 #include <glm/glm.hpp>
 
@@ -25,5 +24,10 @@ void SceneNivel1::Update(float deltaTime)
 
 void SceneNivel1::Draw(Shader &shader)
 {
+    // Parámetros de luz (aquí está ahora la lógica de luz)
+    shader.SetVec3("lightDir", glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)));
+    shader.SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.SetVec3("objectColor", glm::vec3(1.0f, 0.7f, 0.3f)); // Cambia el color del objeto si quieres
+
     scene.Draw(shader);
 }

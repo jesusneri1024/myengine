@@ -1,8 +1,8 @@
-// src/Scene/SceneNivel2.h
 #pragma once
 
 #include "Scene/IScene.h"
 #include "Scene/Scene.h"
+#include "Scene/GameObject.h"
 #include "Model/Model.h"
 #include <memory>
 

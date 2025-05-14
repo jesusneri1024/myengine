@@ -14,6 +14,8 @@ public:
     void Use() const;                                                     // Activar el shader
     void SetMat4(const std::string &name, const glm::mat4 &matrix) const; // Enviar matriz uniforme
 
+    void SetVec3(const std::string &name, const glm::vec3 &value) const;
+
     GLuint GetID() const { return ID; } // Acceso al ID del programa
 
 private:

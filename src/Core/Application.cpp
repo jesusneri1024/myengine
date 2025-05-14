@@ -1,5 +1,3 @@
-// src/Core/Application.cpp
-
 #include <glad/glad.h>
 #include "Core/Application.h"
 #include "Core/InputManager.h"
@@ -86,14 +84,15 @@ void Application::Run()
 
         shader->Use();
 
+        // View y Projection
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f),
                                                 (float)windowWidth / windowHeight,
                                                 0.1f, 100.0f);
-
         shader->SetMat4("view", view);
         shader->SetMat4("projection", projection);
 
+        // La lógica de luz ahora está en cada escena
         scenes[currentSceneIndex]->Update(deltaTime);
         scenes[currentSceneIndex]->Draw(*shader);
 
@@ -106,7 +105,6 @@ void Application::ProcessInput()
 {
     InputManager::ProcessInput(window, camera, deltaTime);
 
-    // Detectar Tab para cambiar de escena
     if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && !tabPressed)
     {
         tabPressed = true;
