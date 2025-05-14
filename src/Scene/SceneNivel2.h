@@ -18,4 +18,5 @@ public:
 private:
     Scene scene;
     std::shared_ptr<Model> model;
+    float lightAngle = 0.0f;
 };

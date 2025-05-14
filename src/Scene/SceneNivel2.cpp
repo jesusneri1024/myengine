@@ -2,9 +2,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-// En SceneNivel2.h
-float lightAngle = 0.0f;
-
 SceneNivel2::SceneNivel2()
 {
     model = std::make_shared<Model>("assets/WusonOBJ.obj");
