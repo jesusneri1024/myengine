@@ -5,6 +5,8 @@
 #include <iostream>
 #include <InputManager.h>
 
+Camera *UIManager::s_Camera = nullptr;
+
 void UIManager::Init(GLFWwindow *window)
 {
     IMGUI_CHECKVERSION();
@@ -73,6 +75,15 @@ void UIManager::RenderMainUI()
         s_ShowConsole = !s_ShowConsole;
     }
 
+    if (s_Camera && ImGui::Button("Resetear Camara"))
+    {
+        // Esto reemplaza el estado actual con el inicial
+        *s_Camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f),
+                           glm::vec3(0.0f, 1.0f, 0.0f),
+                           -90.0f, 0.0f);
+        UIManager::Log("Camara reseteada.");
+    }
+
     ImGui::End();
 
     if (s_ShowConsole)
@@ -135,4 +146,9 @@ void UIManager::ExecuteCommand(const std::string &command)
     {
         Log("Comando no reconocido: " + command);
     }
+}
+
+void UIManager::SetCamera(Camera *cam)
+{
+    s_Camera = cam;
 }

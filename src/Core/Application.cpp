@@ -55,6 +55,8 @@ bool Application::Init(int width, int height, const char *title)
     glfwSetCursorPosCallback(window, InputManager::MouseCallback);
     InputManager::SetCamera(&camera);
 
+    UIManager::SetCamera(&camera);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         return false;
 

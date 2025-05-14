@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 
+class Camera;
 class UIManager
 {
 public:
@@ -14,6 +15,8 @@ public:
 
     static void Log(const std::string &message);
 
+    static void SetCamera(Camera *camera); // 👈 nuevo
+
 private:
     static inline std::vector<std::string> s_LogMessages;
     static inline bool s_ShowConsole = true;
@@ -21,4 +24,5 @@ private:
 
     // Nuevo: Procesar comandos escritos
     static void ExecuteCommand(const std::string &command);
+    static Camera *s_Camera;
 };
