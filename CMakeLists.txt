@@ -38,6 +38,7 @@ add_executable(MyEngine
     src/Scene/SceneNivel1.cpp
     src/Scene/SceneNivel2.cpp
     src/UI/UIManager.cpp
+    src/UI/Console.cpp
     external/glad/src/glad.c
 )
 

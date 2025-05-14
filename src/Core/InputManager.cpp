@@ -28,7 +28,7 @@ void InputManager::ProcessInput(GLFWwindow *window, Camera &camera, float deltaT
     }
 
     // ENTER lo vuelve a ocultar (modo cámara)
-    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
         if (s_CursorEnabled)
         {

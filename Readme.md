@@ -11,6 +11,7 @@ Currently renders a colored 3D model with transformation via matrix operations.
 ![Input Movement](photos_project/movementEngine.gif)  
 ![3D Model Rendering](photos_project/poligonsEngine.gif)
 ![Light Movement](photos_project/LighMovementEngine.gif)
+![Console Engine](photos_project/consoleEngine.gif)
 
 ## 🚀 Features
 
